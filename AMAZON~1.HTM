@@ -679,16 +679,21 @@ function downloadExcel() {
   const allRows = getRows().filter(r => Object.values(r).some(v => v));
   if (allRows.length === 0) { alert('No data to export.'); return; }
 
-  const headers = colDefs.map(c => c.label);
+  // Only include columns that have at least one non-empty value across all rows
+  const activeCols = colDefs.filter(col =>
+    col.fixed || allRows.some(r => r[col.id])
+  );
+
+  const headers = activeCols.map(c => c.label);
   const data = [
     headers,
-    ...allRows.map(r => colDefs.map(c => r[c.id] || ''))
+    ...allRows.map(r => activeCols.map(c => r[c.id] || ''))
   ];
 
   const ws = XLSX.utils.aoa_to_sheet(data);
 
   // Column widths
-  ws['!cols'] = colDefs.map(c => ({ wch: c.fixed ? 14 : 36 }));
+  ws['!cols'] = activeCols.map(c => ({ wch: c.fixed ? 14 : 36 }));
 
   // Bold header row (requires style object per cell)
   headers.forEach((_, ci) => {
