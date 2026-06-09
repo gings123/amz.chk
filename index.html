@@ -36,19 +36,18 @@
 
   /* ── Spreadsheet ────────────────────────────────────── */
   .sheet-outer{overflow-x:auto;border:1px solid var(--sheet-border);border-radius:5px;background:var(--sheet-header)}
-  .sheet-table{border-collapse:collapse;width:100%;table-layout:auto;min-width:400px}
+  .sheet-table{border-collapse:collapse;width:100%;table-layout:fixed;min-width:400px}
 
-  /* Corner + row-number header */
   .sheet-table th.rn-th{
     width:38px;min-width:38px;background:var(--sheet-rn);
     border-right:2px solid #333;border-bottom:2px solid #333;
   }
-  /* Column headers */
   .sheet-table thead th.col-th{
     background:var(--sheet-header);
     border-right:1px solid var(--sheet-border);
     border-bottom:2px solid #333;
     padding:0;position:relative;
+    overflow:visible;
   }
   .sheet-table thead th.col-th:last-of-type{border-right:none}
   .th-inner{display:flex;align-items:stretch}
@@ -68,7 +67,14 @@
   .sheet-table th.col-th:hover .th-del-col{color:#666}
   .th-del-col:hover{color:var(--danger) !important;background:#1a0808}
 
-  /* Add-column th */
+  /* Column resize handle */
+  .col-resize-handle{
+    position:absolute;right:0;top:0;bottom:0;width:5px;
+    cursor:col-resize;background:transparent;z-index:10;
+    transition:background .15s;
+  }
+  .col-resize-handle:hover,.col-resize-handle.resizing{background:var(--accent);opacity:.7}
+
   .sheet-table thead th.add-col-th{
     width:36px;min-width:36px;background:var(--sheet-header);
     border-bottom:2px solid #333;padding:4px;text-align:center;
@@ -82,13 +88,11 @@
   }
   .add-col-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-  /* Delete-row th */
   .sheet-table thead th.del-row-th{
     width:28px;min-width:28px;background:var(--sheet-rn);
     border-left:2px solid #333;border-bottom:2px solid #333;
   }
 
-  /* Row number cells */
   .sheet-table tbody td.rn-td{
     background:var(--sheet-rn);border-right:2px solid #333;
     border-bottom:1px solid #1e1e1e;
@@ -98,7 +102,6 @@
   }
   .rn-td span{display:block;padding:6px 4px;line-height:1}
 
-  /* Data cells */
   .sheet-table tbody td.data-td{
     border-right:1px solid #1e1e1e;border-bottom:1px solid #1e1e1e;
     padding:0;background:var(--surface);position:relative;
@@ -107,22 +110,19 @@
   .sheet-table tbody td.data-td:last-of-type{border-right:none}
   .sheet-table tbody tr:last-child td{border-bottom:none}
 
-  /* Cell input */
   .cell-inp{
     display:block;width:100%;background:transparent;border:none;
     color:var(--text);font-family:'DM Mono',monospace;font-size:12px;
-    padding:6px 9px;outline:none;min-width:90px;
+    padding:6px 9px;outline:none;
   }
   .cell-inp::placeholder{color:#383838}
 
-  /* Selected cell highlight */
   .data-td.selected{
     outline:2px solid var(--accent);outline-offset:-2px;
     background:#1a1400;z-index:2;
   }
   .data-td.selected .cell-inp{color:var(--text)}
 
-  /* Delete row cells */
   .sheet-table tbody td.del-row-td{
     background:var(--sheet-rn);border-left:2px solid #333;
     border-bottom:1px solid #1e1e1e;text-align:center;vertical-align:middle;
@@ -136,7 +136,6 @@
   }
   .del-row-btn:hover{color:var(--danger);background:#2a1010}
 
-  /* Sheet footer */
   .sheet-footer{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
   .add-row-btn{background:none;border:1px dashed #2a2a2a;color:var(--accent);font-family:'DM Mono',monospace;font-size:12px;padding:6px 14px;border-radius:4px;cursor:pointer;transition:border-color .2s,background .2s;letter-spacing:1px}
   .add-row-btn:hover{border-color:var(--accent);background:#1a1500}
@@ -144,7 +143,6 @@
   .clear-btn{background:none;border:1px solid #252525;color:#555;font-family:'DM Mono',monospace;font-size:11px;padding:6px 12px;border-radius:4px;cursor:pointer;margin-left:auto;transition:background .15s,color .15s}
   .clear-btn:hover{background:#2a1010;color:var(--danger)}
 
-  /* Column picker */
   .col-picker-wrap{position:relative;display:inline-block}
   .col-picker{position:absolute;top:calc(100% + 6px);right:0;background:#1c1c1c;border:1px solid var(--border);border-radius:6px;padding:14px;width:260px;box-shadow:0 8px 32px rgba(0,0,0,.7);z-index:200;display:none}
   .col-picker.open{display:block}
@@ -159,13 +157,11 @@
   .picker-add-btn{background:var(--accent);color:#000;border:none;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;padding:7px 12px;border-radius:4px;cursor:pointer;transition:background .15s;white-space:nowrap}
   .picker-add-btn:hover{background:var(--accent2)}
 
-  /* Buttons */
   .btn-row{display:flex;gap:10px;margin-top:8px}
   .generate-btn{flex:1;background:var(--accent);color:#000;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;padding:16px;border:none;border-radius:5px;cursor:pointer;transition:background .2s,transform .1s}
   .generate-btn:hover{background:var(--accent2)}
   .generate-btn:active{transform:scale(.99)}
 
-  /* Output */
   #output-section{display:none;margin-top:24px}
   .output-card{background:var(--surface);border:1px solid var(--accent);border-radius:6px;overflow:hidden}
   .output-header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:#1a1400;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap}
@@ -177,6 +173,10 @@
   .dl-btn{background:none;border:1px solid var(--accent);color:var(--accent);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;padding:6px 14px;border-radius:3px;cursor:pointer;transition:background .15s,color .15s;white-space:nowrap}
   .dl-btn:hover{background:var(--accent);color:#000}
   #output-text{padding:24px;font-size:13px;line-height:1.9;white-space:pre-wrap;color:var(--text);font-family:'DM Mono',monospace}
+
+  /* Resize cursor overlay */
+  body.col-resizing{cursor:col-resize!important;user-select:none}
+  body.col-resizing *{cursor:col-resize!important}
 </style>
 </head>
 <body>
@@ -240,7 +240,6 @@
           <thead>
             <tr id="col-header-row">
               <th class="rn-th"></th>
-              <!-- dynamic col-th elements injected here -->
               <th class="add-col-th" id="add-col-th">
                 <div class="col-picker-wrap" id="col-picker-wrap">
                   <button class="add-col-btn" title="Add column" onclick="togglePicker(event)">+</button>
@@ -267,7 +266,7 @@
         <span class="row-count" id="row-count">0 ASINs</span>
         <button class="clear-btn" onclick="clearAll()">Clear all</button>
       </div>
-      <p class="hint">Click any cell to edit · Tab / arrow keys to navigate · Enter to add a new row · Double-click a header to rename</p>
+      <p class="hint">Click any cell to edit · Tab / arrow keys to navigate · Enter to add row · Drag column edge to resize</p>
     </div>
 
     <!-- Issue context -->
@@ -361,7 +360,7 @@
 //  Column state
 // ═══════════════════════════════════════════════════════
 let colIdSeq = 0;
-const colDefs = []; // { id, label, placeholder, fixed, width }
+const colDefs = [];
 
 const PRESETS = [
   { label: 'Current Title',       placeholder: 'Current (incorrect) title' },
@@ -380,12 +379,47 @@ const PRESETS = [
 function freshId() { return 'c' + (colIdSeq++); }
 
 // ═══════════════════════════════════════════════════════
+//  Column resize
+// ═══════════════════════════════════════════════════════
+function addResizeHandle(th, col) {
+  const handle = document.createElement('div');
+  handle.className = 'col-resize-handle';
+
+  handle.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const startX   = e.clientX;
+    const startW   = th.offsetWidth;
+    handle.classList.add('resizing');
+    document.body.classList.add('col-resizing');
+
+    function onMove(e) {
+      const newW = Math.max(70, startW + e.clientX - startX);
+      th.style.width    = newW + 'px';
+      th.style.minWidth = newW + 'px';
+      col.width = newW;
+    }
+    function onUp() {
+      handle.classList.remove('resizing');
+      document.body.classList.remove('col-resizing');
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup',   onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup',   onUp);
+  });
+
+  th.appendChild(handle);
+}
+
+// ═══════════════════════════════════════════════════════
 //  Column header DOM
 // ═══════════════════════════════════════════════════════
 function makeColTh(col) {
   const th = document.createElement('th');
   th.className = 'col-th';
   th.dataset.colId = col.id;
+  if (col.width) { th.style.width = col.width + 'px'; th.style.minWidth = col.width + 'px'; }
 
   const inner = document.createElement('div');
   inner.className = 'th-inner';
@@ -419,6 +453,7 @@ function makeColTh(col) {
   }
 
   th.appendChild(inner);
+  addResizeHandle(th, col);
   return th;
 }
 
@@ -430,12 +465,11 @@ function insertThBeforeAdd(th) {
 // ═══════════════════════════════════════════════════════
 //  Add / remove columns
 // ═══════════════════════════════════════════════════════
-function addColumn(label, placeholder, fixed) {
-  const col = { id: freshId(), label: label || 'Column', placeholder: placeholder || '', fixed: !!fixed };
+function addColumn(label, placeholder, fixed, width) {
+  const col = { id: freshId(), label: label || 'Column', placeholder: placeholder || '', fixed: !!fixed, width: width || null };
   colDefs.push(col);
   insertThBeforeAdd(makeColTh(col));
 
-  // Add td to every existing row
   document.querySelectorAll('#sheet-body tr').forEach(tr => {
     const delTd = tr.querySelector('.del-row-td');
     const td = makeCellTd(col);
@@ -523,20 +557,17 @@ function addRow(values, focusFirst) {
   const tbody = document.getElementById('sheet-body');
   const tr = document.createElement('tr');
 
-  // Row number
   const rnTd = document.createElement('td');
   rnTd.className = 'rn-td';
   rnTd.innerHTML = '<span></span>';
   tr.appendChild(rnTd);
 
-  // Data cells
   colDefs.forEach(col => {
     const td = makeCellTd(col);
     if (values[col.id] !== undefined) td.querySelector('.cell-inp').value = values[col.id];
     tr.appendChild(td);
   });
 
-  // Delete button
   const delTd = document.createElement('td');
   delTd.className = 'del-row-td';
   const btn = document.createElement('button');
@@ -684,7 +715,6 @@ function downloadExcel() {
   const allRows = getRows().filter(r => Object.values(r).some(v => v));
   if (allRows.length === 0) { alert('No data to export.'); return; }
 
-  // Only include columns that have at least one non-empty value across all rows
   const activeCols = colDefs.filter(col =>
     col.fixed || allRows.some(r => r[col.id])
   );
@@ -696,11 +726,7 @@ function downloadExcel() {
   ];
 
   const ws = XLSX.utils.aoa_to_sheet(data);
-
-  // Column widths
   ws['!cols'] = activeCols.map(c => ({ wch: c.fixed ? 14 : 36 }));
-
-  // Bold header row (requires style object per cell)
   headers.forEach((_, ci) => {
     const addr = XLSX.utils.encode_cell({ r: 0, c: ci });
     if (!ws[addr]) return;
@@ -709,7 +735,6 @@ function downloadExcel() {
 
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'ASIN Updates');
-
   XLSX.writeFile(wb, buildFilename(allRows.length) + '.xlsx');
 }
 
@@ -736,6 +761,422 @@ function updateFilenamePreview() {
 }
 
 // ═══════════════════════════════════════════════════════
+//  Message templates
+// ═══════════════════════════════════════════════════════
+function getRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function buildFullTemplates(d) {
+  const { s, mid, mline, mkt, dline, dur, meth, fields, n, pl, steps, notes, urg, asins } = d;
+  const asinB   = asins ? `\nASINs: ${asins}\n`              : '';
+  const stepsB  = steps ? `\nSteps taken: ${steps}\n`        : '';
+  const notesB  = notes ? `\nAdditional context: ${notes}\n` : '';
+
+  return [
+// 1
+`Subject: Product Data Not Live — ${n} ${pl} | ${s}
+
+Hi Amazon Seller Support,
+
+Writing on behalf of ${s}${mid} on ${mkt}. ${fields} submitted via ${meth} has not reflected live after ${dur}.${dline}
+${asinB}${stepsB}${notesB}Please review the attached file and apply the correct values to the affected detail pages.${urg}
+
+Best regards,
+${s}${mline}`,
+
+// 2
+`Subject: Catalog Update Not Reflecting — ${n} ${pl}
+
+Hello Support,
+
+${s}${mid} on ${mkt} — ${n} ${pl} updated via ${meth} still show incorrect ${fields} after ${dur}.${dline}
+${asinB}${stepsB}${notesB}Correct values for all ${n} ${pl} are in the attached file. Please apply.${urg}
+
+${s}${mline}`,
+
+// 3
+`Subject: Detail Page Not Updating — ${fields} | ${s}
+
+Hi Team,
+
+Catalog issue for ${s}${mid} on ${mkt}: ${fields} updated via ${meth} ${dur} ago is still not live.${dline}
+${asinB}${stepsB}${notesB}The attached Excel has everything — please apply the corrections.${urg}
+
+${s}${mline}`,
+
+// 4
+`Subject: ${n} ${pl} — Incorrect Data Showing Live | ${s}
+
+Dear Seller Support,
+
+Account: ${s}${mid} | ${mkt}
+Issue: ${fields} not live after ${meth} update, ongoing for ${dur}.${dline}
+${asinB}${stepsB}${notesB}Please review the attached spreadsheet and apply the listed corrections.${urg}
+
+${s}${mline}`,
+
+// 5
+`Subject: Live Listing Not Reflecting Submitted Data — ${n} ${pl}
+
+Hi,
+
+${s}${mid} here on ${mkt}. We submitted ${fields} updates via ${meth} but they haven't gone live after ${dur}.${dline}
+${asinB}${stepsB}${notesB}Correct data is in the attached file — please investigate and update.${urg}
+
+Thanks,
+${s}${mline}`,
+
+// 6
+`Subject: Catalog Sync Issue — ${s} | ${n} ${pl}
+
+Hi Amazon Support,
+
+${s}${mid} is experiencing a catalog sync issue on ${mkt}. ${n} ${pl} with ${fields} updated via ${meth} have not gone live after ${dur}.${dline}
+${asinB}${stepsB}${notesB}All details and correct values are in the attached Excel.${urg}
+
+${s}${mline}`,
+
+// 7
+`Subject: Product Detail Page Data Issue — ${n} ${pl}
+
+Hello,
+
+The live detail pages for ${n} ${pl} on ${mkt} are still showing incorrect ${fields}, despite a ${meth} update ${dur} ago.${dline}
+
+Seller: ${s}${mid}
+${asinB}${stepsB}${notesB}Please see the attached file for correct values and apply them.${urg}
+
+${s}${mline}`,
+
+// 8
+`Subject: Data Not Live After ${dur} — ${n} ${pl} | ${mkt}
+
+Hi Support,
+
+${s}${mid} submitted ${fields} corrections via ${meth} ${dur} ago — the live pages still haven't updated.${dline}
+${asinB}${stepsB}${notesB}Correct data for all ${n} ${pl} is attached. Please apply.${urg}
+
+${s}${mline}`,
+
+// 9
+`Subject: Catalog Fix Request — ${s} — ${n} ${pl}
+
+Hi,
+
+Contacting Seller Support for ${s}${mid} regarding a data propagation issue on ${mkt}. ${fields} updated via ${meth} is still not live after ${dur}.${dline}
+${asinB}${stepsB}${notesB}Please action the corrections in the attached Excel file.${urg}
+
+${s}${mline}`,
+
+// 10
+`Subject: Incorrect Product Data Live — ${n} ${pl} Need Update
+
+Hello Amazon Catalog Team,
+
+${s}${mid} on ${mkt} needs assistance correcting ${fields} for ${n} ${pl}. Updates submitted via ${meth} have not gone live after ${dur}.${dline}
+${asinB}${stepsB}${notesB}Please apply the correct values listed in the attached file.${urg}
+
+${s}${mline}`,
+
+// 11
+`Subject: ${fields} Not Reflecting — ${n} ${pl} | ${s}
+
+Hi Team,
+
+Quick note: ${s}${mid} on ${mkt} has ${n} ${pl} where ${fields} corrections (submitted via ${meth}, ${dur} ago) haven't propagated live.${dline}
+${asinB}${stepsB}${notesB}Full list and correct values attached.${urg}
+
+${s}${mline}`,
+
+// 12
+`Subject: Live Detail Page Not Updated — Catalog Correction Needed
+
+Hi Seller Support,
+
+Catalog correction request for ${s}${mid} on ${mkt}. ${n} ${pl} are displaying outdated ${fields} despite a ${meth} submission ${dur} ago.${dline}
+${asinB}${stepsB}${notesB}Please review the attached Excel and apply the correct data.${urg}
+
+${s}${mline}`,
+
+// 13
+`Subject: ASIN Data Not Propagating — ${s} | ${mkt}
+
+Hello,
+
+${s}${mid} — correct ${fields} submitted via ${meth} ${dur} ago are still not showing live on ${mkt}.${dline}
+${asinB}${stepsB}${notesB}See attached for the full ${n}-${pl} list and corrections.${urg}
+
+${s}${mline}`,
+
+// 14
+`Subject: Product Page Correction — ${n} ${pl} | ${s}
+
+Hi Support,
+
+Reaching out for ${s}${mid} on ${mkt}: ${fields} submitted via ${meth} isn't live after ${dur}.${dline}
+${asinB}${stepsB}${notesB}The attached Excel has the current values and what they should be. Please escalate to the catalog team.${urg}
+
+${s}${mline}`,
+
+// 15
+`Subject: Catalog Data Still Not Live — ${dur} | ${n} ${pl}
+
+Hi,
+
+${s}${mid} on ${mkt}. Updated ${fields} via ${meth} ${dur} ago — still not reflecting on the live page.${dline}
+${asinB}${stepsB}${notesB}Correct values for all ${n} ${pl} are in the attached file. Please review and push live.${urg}
+
+${s}${mline}`,
+  ];
+}
+
+function buildBulletTemplates(d) {
+  const { s, mid, mline, mkt, date, dline, dur, meth, fields, n, pl, steps, notes, urg, asins } = d;
+  const asinLine   = asins ? `\n• ASINs: ${asins}`   : '';
+  const stepsLine  = steps ? `\n• Steps taken: ${steps}` : '';
+  const notesLine  = notes ? `\n• Notes: ${notes}`    : '';
+
+  return [
+// 1
+`Subject: Catalog Data Not Live — ${n} ${pl} | ${s}
+
+Hi Support,
+
+• Seller: ${s}${mid}
+• Marketplace: ${mkt}
+• Fields: ${fields}
+• Method: ${meth} | Duration: ${dur}${date ? '\n• Discovered: ' + date : ''}
+• ASINs affected: ${n} (attached)${asinLine}${stepsLine}${notesLine}
+
+Please apply the correct values in the attached file.${urg}
+
+${s}${mline}`,
+
+// 2
+`Subject: Incorrect Listing Data — ${n} ${pl} Need Fix
+
+Hello Team,
+
+${s}${mid} has a live data issue on ${mkt}:
+
+• Fields affected: ${fields}
+• Update method: ${meth}
+• Duration: ${dur}${date ? '\n• Discovered: ' + date : ''}
+• Count: ${n} ${pl}${asinLine}${stepsLine}${notesLine}
+
+See attached for all ASINs and correct values.${urg}
+
+${s}${mline}`,
+
+// 3
+`Subject: RE: Catalog Fix — ${s} | ${n} ${pl} | ${mkt}
+
+Hi,
+
+• Account: ${s}${mid} | ${mkt}
+• Issue: ${fields} not live after ${meth} update
+• Duration: ${dur}${date ? ' (since ' + date + ')' : ''}
+• Affected: ${n} ${pl}${asinLine}${stepsLine}${notesLine}
+
+Full ASIN list + correct data attached. Please apply.${urg}
+
+${s}${mline}`,
+
+// 4
+`Subject: Data Propagation Issue — ${n} ${pl} | ${s}
+
+Hi Support Team,
+
+Quick summary for ${s}${mid} on ${mkt}:
+
+• ${fields} not reflecting live after ${meth} (${dur})${date ? '\n• First noticed: ' + date : ''}
+• ${n} ${pl} affected${asinLine}${stepsLine}${notesLine}
+
+Correct values are in the attached Excel. Please investigate and apply.${urg}
+
+${s}${mline}`,
+
+// 5
+`Subject: ${fields} Not Live — ${n} ${pl} | ${mkt}
+
+Hey Support,
+
+Flagging a catalog issue for ${s}${mid}:
+
+• Marketplace: ${mkt}
+• Problem: ${fields} submitted via ${meth} not live (${dur})${date ? '\n• Noticed: ' + date : ''}
+• Affected ASINs: ${n}${asinLine}${stepsLine}${notesLine}
+
+Attached file has everything. Please push the correct data live.${urg}
+
+${s}${mline}`,
+
+// 6
+`Subject: Urgent Catalog Update Request — ${s} — ${n} ${pl}
+
+Dear Seller Support,
+
+Please see the summary below and the attached file for full details:
+
+• Seller: ${s}${mid}
+• Marketplace: ${mkt}
+• Fields: ${fields}
+• Submitted via: ${meth}
+• Not live for: ${dur}${date ? '\n• Discovered: ' + date : ''}
+• Count: ${n} ${pl}${asinLine}${stepsLine}${notesLine}
+
+Kindly review and apply the corrections.${urg}
+
+${s}${mline}`,
+
+// 7
+`Subject: Live Page Data Mismatch — ${n} ${pl} | ${s}
+
+Hi,
+
+${s}${mid} — ${mkt} catalog issue:
+
+• ${fields} not reflecting after ${meth} submission
+• Duration: ${dur}${date ? ' | Discovered: ' + date : ''}
+• ${n} ${pl} impacted${asinLine}${stepsLine}${notesLine}
+
+See attached for correct values. Please apply.${urg}
+
+${s}${mline}`,
+
+// 8
+`Subject: Catalog Correction Needed — ${n} ${pl} | ${s}
+
+Hello,
+
+Submitting a catalog correction request for ${s}${mid} on ${mkt}:
+
+• Fields: ${fields}
+• Update method: ${meth}
+• Not live for: ${dur}${date ? '\n• Date noticed: ' + date : ''}
+• Total ASINs: ${n}${asinLine}${stepsLine}${notesLine}
+
+Correct data is attached. Please review and update.${urg}
+
+${s}${mline}`,
+
+// 9
+`Subject: Title / Data Not Reflecting — ${s} | ${n} ${pl}
+
+Hi Support,
+
+Issue summary for ${s}${mid}:
+
+• Platform: ${mkt}
+• Fields not live: ${fields}
+• How updated: ${meth}
+• Duration: ${dur}${date ? '\n• First seen: ' + date : ''}
+• # of ASINs: ${n}${asinLine}${stepsLine}${notesLine}
+
+Attached file has all corrections. Please apply.${urg}
+
+${s}${mline}`,
+
+// 10
+`Subject: ${n} ${pl} Showing Wrong Data — ${s} | ${mkt}
+
+Hello Catalog Team,
+
+${s}${mid} is seeing ${fields} mismatches on ${mkt}:
+
+• Update method: ${meth}
+• Duration: ${dur}${date ? '\n• Noticed: ' + date : ''}
+• ASINs affected: ${n}${asinLine}${stepsLine}${notesLine}
+
+Please refer to the attached file and apply the corrections.${urg}
+
+${s}${mline}`,
+
+// 11
+`Subject: Data Not Propagating — ${mkt} | ${s} | ${n} ${pl}
+
+Hi all,
+
+Raising a data propagation issue for ${s}${mid}:
+
+• Fields: ${fields}
+• Method used: ${meth}
+• Time elapsed: ${dur}${date ? '\n• Discovery date: ' + date : ''}
+• ${n} ${pl} impacted${asinLine}${stepsLine}${notesLine}
+
+Correct values are in the attached Excel. Please review.${urg}
+
+${s}${mline}`,
+
+// 12
+`Subject: Product Detail Page Not Updating — ${n} ${pl}
+
+Hi,
+
+This is a data correction request for ${s}${mid} on ${mkt}. Here's the situation:
+
+• Affected fields: ${fields}
+• Submitted via: ${meth}
+• Not live for: ${dur}${date ? '\n• Identified: ' + date : ''}
+• Total: ${n} ${pl}${asinLine}${stepsLine}${notesLine}
+
+Please see the attached file and apply the listed changes.${urg}
+
+${s}${mline}`,
+
+// 13
+`Subject: Catalog Data Fix — ${s} — ${n} ${pl} — ${mkt}
+
+Dear Catalog Team,
+
+Please assist with the following:
+
+• Seller: ${s}${mid}
+• Marketplace: ${mkt}
+• Fields affected: ${fields}
+• Last updated via: ${meth}
+• Duration of issue: ${dur}${date ? '\n• First noticed: ' + date : ''}
+• ASINs: ${n} (see attached)${asinLine}${stepsLine}${notesLine}
+
+Attached Excel contains the correct values per ASIN.${urg}
+
+${s}${mline}`,
+
+// 14
+`Subject: Live Data Not Updated — ${s} | ${n} ${pl} | ${dur}
+
+Hi Support,
+
+Issue at a glance for ${s}${mid}:
+
+• Marketplace: ${mkt}
+• ${fields} — submitted via ${meth}, not live (${dur})${date ? '\n• Noticed: ' + date : ''}
+• ${n} ${pl}${asinLine}${stepsLine}${notesLine}
+
+Attached has all corrections. Please apply ASAP.${urg}
+
+${s}${mline}`,
+
+// 15
+`Subject: ${fields} Correction Request — ${n} ${pl} | ${s}
+
+Hello,
+
+Flagging a live-page data issue for ${s}${mid} on ${mkt}. Summary:
+
+• Fields: ${fields}
+• Update method: ${meth}
+• Not live for: ${dur}${date ? '\n• Discovered: ' + date : ''}
+• Affected: ${n} ${pl}${asinLine}${stepsLine}${notesLine}
+
+Please review the attached file and update the live listings.${urg}
+
+${s}${mline}`,
+  ];
+}
+
+// ═══════════════════════════════════════════════════════
 //  Case generation
 // ═══════════════════════════════════════════════════════
 function generate() {
@@ -758,61 +1199,38 @@ function generate() {
 
   const count    = allRows.length;
   const plural   = count > 1 ? 'ASINs' : 'ASIN';
-  const merchantLine = merchantId ? '\nMerchant ID: ' + merchantId : '';
-  const dateLine = date ? ' The issue was first noticed on ' + date + '.' : '';
   const fieldNames = colDefs.filter(c => !c.fixed).map(c => c.label);
   const fieldStr = fieldNames.length ? fieldNames.join(', ') : 'product data';
 
   let urgencyLine = '';
-  if (urgency === 'elevated') urgencyLine = '\nThis issue is impacting our search visibility and conversion rates. An expedited resolution would be greatly appreciated.';
-  if (urgency === 'high')     urgencyLine = '\n⚠ This is time-sensitive — we currently have an active advertising campaign / product launch running, and the incorrect data is directly impacting performance. We request urgent escalation.';
+  if (urgency === 'elevated') urgencyLine = '\n\nThis issue is impacting search visibility and conversion rates. An expedited resolution would be appreciated.';
+  if (urgency === 'high')     urgencyLine = '\n\n⚠ Time-sensitive — an active advertising campaign / product launch is running and the incorrect data is directly impacting performance. Please escalate.';
 
-  const stepsBlock = stepsTaken ? `\nSteps Already Taken:\n${stepsTaken}\n` : '';
-  const notesBlock = extraNotes ? `\nAdditional Context:\n${extraNotes}\n` : '';
+  // ASIN list for ≤10 rows
+  const asinCol = colDefs.find(c => c.fixed);
+  const asinValues = asinCol ? allRows.map(r => r[asinCol.id]).filter(v => v) : [];
+  const asinInline = count <= 10 && asinValues.length > 0 ? asinValues.join(', ') : null;
 
-  let body = '';
+  const d = {
+    s:      sellerName,
+    mid:    merchantId ? ` (Merchant ID: ${merchantId})` : '',
+    mline:  merchantId ? '\nMerchant ID: ' + merchantId : '',
+    mkt:    marketplace,
+    date,
+    dline:  date ? ` First noticed: ${date}.` : '',
+    dur:    duration,
+    meth:   method,
+    fields: fieldStr,
+    n:      count,
+    pl:     plural,
+    steps:  stepsTaken,
+    notes:  extraNotes,
+    urg:    urgencyLine,
+    asins:  asinInline,
+  };
 
-  if (format === 'full') {
-    body =
-`Subject: Product Detail Page Data Not Reflecting Live — ${count} ${plural} Requiring Update
-
-Hello Amazon Seller Support,
-
-I am writing on behalf of ${sellerName}${merchantId ? ' (Merchant ID: ' + merchantId + ')' : ''}, a seller on ${marketplace}.
-
-We are experiencing an issue where product data submitted via ${method} is not reflecting on the live detail page(s) after ${duration}.${dateLine} The affected fields are: ${fieldStr}.
-
-Please refer to the attached Excel file for the complete list of ${count} affected ${plural} along with the current (incorrect) values and the correct data we are requesting to be applied.
-${stepsBlock}${notesBlock}
-We kindly ask that Amazon Catalog / Seller Support review the attached file, investigate why the data is not propagating to the live detail pages, and apply the correct values as listed.${urgencyLine}
-
-If additional documentation, flat files, or proof of brand ownership is required, please let us know and we will provide it promptly.
-
-Thank you for your time and assistance.
-
-Best regards,
-${sellerName}${merchantLine}`;
-  } else {
-    body =
-`Subject: Catalog Data Not Reflecting Live — ${count} ${plural} — Action Required
-
-Hi Support Team,
-
-• Seller: ${sellerName}${merchantId ? ' | MID: ' + merchantId : ''}
-• Marketplace: ${marketplace}
-• Fields affected: ${fieldStr}
-• Update method: ${method}
-• Duration: ${duration}${date ? '\n• Discovered: ' + date : ''}
-• ASINs affected: ${count} (see attached Excel file)
-${stepsTaken ? '\n• Steps taken: ' + stepsTaken : ''}${extraNotes ? '\n• Notes: ' + extraNotes : ''}
-
-Please see the attached file for the full ASIN list and correct data. Kindly investigate and apply the correct values to the live detail pages.${urgencyLine}
-
-Happy to provide flat files, LOA, or Brand Registry proof on request.
-
-Thanks,
-${sellerName}`;
-  }
+  const templates = format === 'full' ? buildFullTemplates(d) : buildBulletTemplates(d);
+  const body = getRandom(templates);
 
   document.getElementById('output-text').textContent = body;
   const sec = document.getElementById('output-section');
@@ -821,7 +1239,6 @@ ${sellerName}`;
   document.getElementById('copy-btn').textContent = 'Copy to Clipboard';
   document.getElementById('copy-btn').classList.remove('copied');
 
-  // Auto-download Excel
   downloadExcel();
 }
 
@@ -837,19 +1254,17 @@ function copyText() {
 // ═══════════════════════════════════════════════════════
 //  Init
 // ═══════════════════════════════════════════════════════
-addColumn('ASIN',                     'B0XXXXXXX',              true);
-addColumn('Current (Incorrect) Title','Current title showing live');
-addColumn('Correct / Desired Title',  'Title that should be live');
+addColumn('ASIN',                     'B0XXXXXXX',              true,  120);
+addColumn('Current (Incorrect) Title','Current title showing live', false, 240);
+addColumn('Correct / Desired Title',  'Title that should be live',  false, 240);
 addRow({}, false);
 refreshPresetGrid();
 
-// Live filename preview
 ['seller-name','marketplace','file-suffix'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('input', updateFilenamePreview);
   if (el && el.tagName === 'SELECT') el.addEventListener('change', updateFilenamePreview);
 });
-// Also update when rows change
 const _origUpdateRowCount = updateRowCount;
 updateRowCount = function() { _origUpdateRowCount(); updateFilenamePreview(); };
 updateFilenamePreview();
